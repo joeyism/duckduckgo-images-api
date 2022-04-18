@@ -67,8 +67,8 @@ def search(keywords: str, max_results=None) -> Dict:
         logger.debug("Hitting Url Success : %s", requestUrl)
         printJson(data["results"])
 
-        if "next" not in data:
-            logger.debug("No Next Page - Exiting")
+        if "next" not in data or (max_results is not None and len(data["results"]) >= max_results):
+            logger.debug("No Next Page or max_results exceeded - Exiting")
             return data
 
         requestUrl = url + data["next"]
