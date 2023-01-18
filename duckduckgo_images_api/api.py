@@ -53,6 +53,8 @@ def search(keywords: str, max_results=None) -> Dict:
 
     logger.debug("Hitting Url : %s", requestUrl)
 
+    results = []
+
     while True:
         while True:
             try:
@@ -65,11 +67,16 @@ def search(keywords: str, max_results=None) -> Dict:
                 continue
 
         logger.debug("Hitting Url Success : %s", requestUrl)
+        results += data["results"]
         printJson(data["results"])
 
         if "next" not in data:
             logger.debug("No Next Page - Exiting")
-            return data
+            return { 'results': results }
+
+        if max_results is not None and len(results) >= max_results:
+            logger.debug("Hit max results - Exiting")
+            return { 'results': results }
 
         requestUrl = url + data["next"]
 
